@@ -105,6 +105,10 @@ app.get('/api/health', (req, res) => {
     });
 });
 
+app.get('/healthz', (req, res) => {
+    res.status(200).send('OK');
+});
+
 // Handle undefined routes
 app.all('*', (req, res, next) => {
     next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
