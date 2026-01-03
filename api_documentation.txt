@@ -1,6 +1,6 @@
 SHOE APP API DOCUMENTATION
 ==========================
-Base URL: http://localhost:5000/api
+Base URL: https://shoe-app-backend-3ftu.onrender.com/api
 
 NOTES:
 - All protected routes require Header: `Authorization: Bearer <token>`
