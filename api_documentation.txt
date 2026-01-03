@@ -1,0 +1,304 @@
+SHOE APP API DOCUMENTATION
+==========================
+Base URL: http://localhost:5000/api
+
+NOTES:
+- All protected routes require Header: `Authorization: Bearer <token>`
+- Response format is generally JSON: `{ status: "success", data: { ... } }` or `{ status: "fail", message: "Error..." }`
+
+--------------------------------------------------------------------------------
+1. AUTHENTICATION
+--------------------------------------------------------------------------------
+
+### Register a new user
+POST /auth/signup
+Headers:
+  Content-Type: application/json
+Body:
+{
+  "name": "John Doe",
+  "email": "john@example.com",
+  "password": "securePassword123",
+  "isAdmin": false  // Optional, default false
+}
+
+### Login user
+POST /auth/login
+Headers:
+  Content-Type: application/json
+Body:
+{
+  "email": "john@example.com",
+  "password": "securePassword123"
+}
+
+--------------------------------------------------------------------------------
+2. PRODUCTS
+--------------------------------------------------------------------------------
+
+### Get all products
+GET /products
+Query Parameters (Optional):
+  ?page=1&limit=10
+  ?sort=price (or -price)
+  ?keyword=nike
+  ?price[gte]=10&price[lte]=500
+  ?size=10
+Body: None
+
+### Get single product
+GET /products/:slug (or :id)
+Body: None
+
+### Create a product (Admin Only)
+POST /products
+Headers:
+  Content-Type: application/json
+  Authorization: Bearer <admin_token>
+Body:
+{
+  "name": "Nike Air Max",
+  "price": 120,
+  "description": "Great shoes...",
+  "brand": "Nike",
+  "category": "Running",
+  "countInStock": 10,
+  "images": ["url1.jpg", "url2.jpg"],
+  "sizes": [7, 8, 9, 10],
+  "colors": ["Red", "Black"],
+  "gender": "Men"
+  // ...other product fields
+}
+
+### Update a product (Admin Only)
+PUT /products/:id
+Headers:
+  Content-Type: application/json
+  Authorization: Bearer <admin_token>
+Body:
+{
+  "price": 110,
+  "countInStock": 15
+  // Any product fields to update
+}
+
+### Delete a product (Admin Only - Soft Delete)
+DELETE /products/:id
+Headers:
+  Authorization: Bearer <admin_token>
+Body: None
+
+--------------------------------------------------------------------------------
+3. ORDERS
+--------------------------------------------------------------------------------
+
+### Create new order (Checkout)
+POST /orders/checkout
+Headers:
+  Content-Type: application/json
+  Authorization: Bearer <token>
+Body:
+{
+  "orderItems": [
+    {
+      "product": "product_id_here",
+      "name": "Nike Air Max",
+      "qty": 1,
+      "image": "url.jpg",
+      "price": 120,
+      "size": 10
+    }
+  ],
+  "shippingAddress": {
+    "address": "123 Main St",
+    "city": "New York",
+    "postalCode": "10001",
+    "country": "USA"
+  },
+  "paymentMethod": "Stripe", // or PayPal
+  "itemsPrice": 120,
+  "taxPrice": 10,
+  "shippingPrice": 5,
+  "totalPrice": 135
+}
+
+### Get my orders
+GET /orders/my
+Headers:
+  Authorization: Bearer <token>
+Body: None
+
+### Get specific order
+GET /orders/:id
+Headers:
+  Authorization: Bearer <token>
+Body: None
+
+### Get all orders (Admin Only)
+GET /orders
+Headers:
+  Authorization: Bearer <admin_token>
+Body: None
+
+### Update order status (Admin Only)
+PUT /orders/:id/status
+Headers:
+  Content-Type: application/json
+  Authorization: Bearer <admin_token>
+Body:
+{
+  "status": "delivered" // pending, processing, shipped, delivered, cancelled
+}
+
+--------------------------------------------------------------------------------
+4. CART
+--------------------------------------------------------------------------------
+
+### Get User Cart
+GET /cart
+Headers:
+  Authorization: Bearer <token>
+Body: None
+
+### Add Item to Cart
+POST /cart/add
+Headers:
+  Content-Type: application/json
+  Authorization: Bearer <token>
+Body:
+{
+  "productId": "product_id_here",
+  "size": 10,
+  "quantity": 1
+}
+
+### Update Item Quantity
+PUT /cart/update
+Headers:
+  Content-Type: application/json
+  Authorization: Bearer <token>
+Body:
+{
+  "itemId": "cart_item_subdocument_id", // _id of the item in the cart array
+  "quantity": 2
+}
+
+### Remove Item from Cart
+DELETE /cart/remove/:itemId
+Headers:
+  Authorization: Bearer <token>
+Body: None
+
+--------------------------------------------------------------------------------
+5. WISHLIST
+--------------------------------------------------------------------------------
+
+### Get User Wishlist
+GET /wishlist
+Headers:
+  Authorization: Bearer <token>
+Body: None
+
+### Add Product to Wishlist
+POST /wishlist/:productId
+Headers:
+  Authorization: Bearer <token>
+Body: None
+
+### Remove Product from Wishlist
+DELETE /wishlist/:productId
+Headers:
+  Authorization: Bearer <token>
+Body: None
+
+--------------------------------------------------------------------------------
+6. USER PROFILE
+--------------------------------------------------------------------------------
+
+### Get Profile
+GET /profile
+Headers:
+  Authorization: Bearer <token>
+Body: None
+
+### Update Profile
+PUT /profile
+Headers:
+  Content-Type: application/json
+  Authorization: Bearer <token>
+Body:
+{
+  "name": "Jane Doe",
+  "email": "jane@example.com"
+}
+
+### Update Password
+PUT /profile/password
+Headers:
+  Content-Type: application/json
+  Authorization: Bearer <token>
+Body:
+{
+  "currentPassword": "oldPassword123",
+  "newPassword": "newPassword456"
+}
+
+### Delete Account
+DELETE /profile
+Headers:
+  Authorization: Bearer <token>
+Body: None
+
+--------------------------------------------------------------------------------
+7. NOTIFICATIONS
+--------------------------------------------------------------------------------
+
+### Get Notifications
+GET /notifications
+Headers:
+  Authorization: Bearer <token>
+Body: None
+
+### Mark as Read
+PUT /notifications/read/:id
+Headers:
+  Authorization: Bearer <token>
+Body: None
+
+### Clear All
+DELETE /notifications/clear
+Headers:
+  Authorization: Bearer <token>
+Body: None
+
+--------------------------------------------------------------------------------
+8. SEARCH
+--------------------------------------------------------------------------------
+
+### Search Products
+GET /search
+Query Parameters:
+  ?keyword=running
+  ?sort=price
+  ?price[lte]=200
+Body: None
+
+--------------------------------------------------------------------------------
+9. ADMIN SPECIFIC
+--------------------------------------------------------------------------------
+
+### Admin Login
+POST /admin/login
+Headers:
+  Content-Type: application/json
+Body:
+{
+  "email": "admin@example.com",
+  "password": "adminPassword"
+}
+
+### Get Admin Profile
+GET /admin/me
+Headers:
+  Authorization: Bearer <admin_token>
+Body: None
