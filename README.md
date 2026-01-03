@@ -15,6 +15,9 @@ A robust Node.js + Express REST API backend for a Shoe E-commerce application. T
     - CORS enabled
 - **Production Ready**: Centralized error handling, request logging, and health checks.
 
+## 🌐 Live API
+**Base URL (Production):** `https://shoe-app-backend-3ftu.onrender.com/api`
+
 ## 🛠 Tech Stack
 
 - **Runtime**: Node.js
