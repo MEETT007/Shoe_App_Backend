@@ -27,6 +27,9 @@ const uploadRoutes = require('./routes/uploadRoutes'); // Import upload routes
 
 const app = express();
 
+// Trust the proxy (Render/Heroku/etc) to get the correct IP
+app.set('trust proxy', 1);
+
 // 1) GLOBAL MIDDLEWARES
 // Implement CORS
 app.use(cors());
